@@ -105,7 +105,7 @@ public class Triangle extends JPanel {
             // Если новые координаты не выходят за пределы, обновляем текущие координаты
             this.coordinates = newCoordinates;
         } else {
-            JOptionPane.showMessageDialog(null, "Cannot rotate the other way", "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Невозможно повернуть. Выходит за пределы холста.", "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 
