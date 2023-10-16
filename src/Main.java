@@ -9,6 +9,7 @@ public  class Main{
 
     // список всех кнопок, необходимых для рыботы
     private JButton[] buttons;
+    private int interfaceWight = 1000, interfaceHight = 500;
     private int buttonKey = 0;
 
     //для работы с объектами
@@ -24,7 +25,8 @@ public  class Main{
     private  int[] numbers;
     private boolean vision, visionRect, visionCircle, visionTriangle;
     private int a,b,c,d,e =0;
-    private int cntCircles, cntTriangles, cntRects, cntLines = 10;
+    private int cntCircles = 10, cntTriangles = 10, cntRects = 10, cntLines = 10;
+    private  int cntErors = 0;
 
 
     private Main() {
@@ -45,20 +47,19 @@ public  class Main{
         };
         sP = southPanel();
         //создаем основное окно
-        fNL.setLayout(new BorderLayout()); //setLayout - метод для изменения менеджера размещения, BorderLayout - менеджер
-        fNL.setSize(1280,680);
+        fNL.setLayout(new BorderLayout());
+        fNL.setSize(1200,700);
         fNL.add(cP, BorderLayout.CENTER);
         fNL.add(sP, BorderLayout.SOUTH);
-        fNL.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //позволяет указать действие, которое необходимо выполнить, когда пользователь закрывает окно нажатием на крестик.
+        fNL.setResizable(false);
+        fNL.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         fNL.setVisible(true);
-
-
     }
 
     private JPanel centerPanel () {
         JPanel p = new JPanel();
         p.setLayout(new BorderLayout());
-        p.setBackground(Color.white);
+        p.setBackground(Color.WHITE);
         return p;
     }
 
@@ -66,13 +67,13 @@ public  class Main{
     private JPanel southPanel () {
         JPanel p = new JPanel();
         p.setLayout(new FlowLayout());
-        p.setBackground(Color.GRAY);
+        p.setBackground(Color.LIGHT_GRAY);
         p.add(buttons[1]);
         p.add(buttons[2]);
         p.add(buttons[3]);
         p.add(buttons[4]);
 
-        // Добавляем обработчик события для кнопки "Назад"
+        // назад
         buttons[0].addActionListener(e -> {
             if (buttonKey >= 1 && buttonKey <= 4) {
                 sP.removeAll();
@@ -130,7 +131,7 @@ public  class Main{
 
         buttons[4].addActionListener( e-> {
             sP.removeAll();
-            numbers = new int[]{0,5,6,7,10,11,12};
+            numbers = new int[]{0,5,6,7,8,11,12};
             for (int number : numbers){
                 sP.add(buttons[number]);
             }
@@ -142,7 +143,7 @@ public  class Main{
 
         //создание
         buttons[5].addActionListener(e ->{
-            int tag; // Инициализируем переменную tag значением, которое не может быть введено пользователем
+            int tag;
 
             try {
                 tag = Integer.parseInt(JOptionPane.showInputDialog("Хотите ввести параметры вручную? (0-нет, 1-да)"));
@@ -155,17 +156,19 @@ public  class Main{
                     else {
                         createRandom();
                     }
-
                 }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Ошибка: некорректный ввод.", "Ошибка", JOptionPane.ERROR_MESSAGE);
             }
 
         });
+        //передвинуть
 
         buttons[6].addActionListener( e -> {
-            int x = -30 + (int) (Math.random() * 100);
-            int y = -30 + (int) (Math.random() * 100);
+
+            int x = (int) (Math.random() * 100) - 100;
+            int y = (int) (Math.random() * 100) - 100;
+
             if (buttonKey == 1){
                 if (line != null) {
                     ((Line) line).MoveTo(x, y);
@@ -181,7 +184,6 @@ public  class Main{
                         lines[i].MoveTo(x, y);
                         lines[i].Show(vision);
                         cP.repaint();
-                        System.out.println("перемещение Линии №" + (i+1));
                     }
                     cP.revalidate();
                 }
@@ -203,7 +205,6 @@ public  class Main{
                         circles[i].MoveTo(x, y);
                         circles[i].Show(visionCircle);
                         cP.repaint();
-                        System.out.println("перемещение Окружности №" + (i+1));
                     }
                     cP.revalidate();
                 }
@@ -225,7 +226,6 @@ public  class Main{
                         rectangles[i].MoveTo(x, y);
                         rectangles[i].Show(visionRect);
                         cP.repaint();
-                        System.out.println("перемещение Прямоугольника №" + (i+1));
                     }
                     cP.revalidate();
                 }
@@ -244,11 +244,10 @@ public  class Main{
                 }
             } else if (buttonKey == 14) {
                 if (triangles != null) {
-                    for (int i=0; i<10; i++) {
+                    for (int i=0; i<cntTriangles; i++) {
                         triangles[i].MoveTo(x, y);
                         triangles[i].Show(visionTriangle);
                         cP.repaint();
-                        System.out.println("перемещение Треугольника №" + (i+1));
                     }
                     cP.revalidate();
                 }
@@ -256,7 +255,7 @@ public  class Main{
                     JOptionPane.showMessageDialog(fNL, "Массив Треугольников не найден");
                 }
             }
-            x = y = 0;
+            cntCircles = cntTriangles = cntRects = cntLines = 10;
         });
 
         // del
@@ -275,7 +274,7 @@ public  class Main{
             }
             else if (buttonKey == 11) {
                 if (lines != null) {
-                    for (int i=0; i<10; i++) {
+                    for (int i=0; i<cntLines; i++) {
                         cP.remove(lines[i]);
                         lines[i].Show(false);
                     }
@@ -301,7 +300,7 @@ public  class Main{
             }
             else if (buttonKey == 12) {
                 if (circles != null) {
-                    for (int i=0; i<10; i++) {
+                    for (int i=0; i<cntCircles; i++) {
                         cP.remove(circles[i]);
                         circles[i].Show(false);
                     }
@@ -310,7 +309,7 @@ public  class Main{
                     cP.repaint();
                 }
                 else {
-                    JOptionPane.showMessageDialog(fNL, "Массив линий не найден");
+                    JOptionPane.showMessageDialog(fNL, "Массив окружностей не найден");
                 }
             }
             else if (buttonKey == 3) {
@@ -327,7 +326,7 @@ public  class Main{
             }
             else if (buttonKey == 13) {
                 if (rectangles != null) {
-                    for (int i=0; i<10; i++) {
+                    for (int i=0; i<cntRects; i++) {
                         cP.remove(rectangles[i]);
                         rectangles[i].Show(false);
                     }
@@ -353,7 +352,7 @@ public  class Main{
             }
             else if (buttonKey == 14) {
                 if (triangles != null) {
-                    for (int i=0; i<10; i++) {
+                    for (int i=0; i<cntTriangles; i++) {
                         cP.remove(triangles[i]);
                         triangles[i].Show(false);
                     }
@@ -391,14 +390,37 @@ public  class Main{
                     JOptionPane.showMessageDialog(fNL, "Массив не создан");
                 }
             }
+            else if (buttonKey == 4) {
+                if (triangle != null) {
+                    ((Triangle) triangle).rotate();
+                    ((Triangle) triangle).Show(visionTriangle);
+                    cP.revalidate();
+                    cP.repaint();
+                }
+                else {
+                    JOptionPane.showMessageDialog(fNL, "Треугольник не найден");
+                }
+            }
+            else if (buttonKey == 14) {
+                if (triangles != null) {
+                    for (int i = 0; i < cntTriangles; i++) {
+                        triangles[i].rotate();
+                        triangles[i].Show(visionTriangle);
+                    }
+                    cP.revalidate();
+                    cP.repaint();
+                } else {
+                    JOptionPane.showMessageDialog(fNL, "Массив треугольников не создан");
+                }
+            }
         });
 
         //изменить радиус
         buttons[9].addActionListener(e-> {
             if (buttonKey == 2) {
-                int x = 50 + (int) (Math.random() * 150);
+                int x = 10 + (int) (Math.random() * 150);
                 if (circle != null) {
-                    ((Circle) circle).chRad(x);
+                    ((Circle) circle).chengeD(x);
                     ((Circle) circle).Show(visionCircle);
                     x = 0;
                     cP.revalidate();
@@ -409,22 +431,22 @@ public  class Main{
             }
             else if (buttonKey == 12) {
                 if (circles != null) {
-                    for (int i = 0; i < 10; i++) {
-                        int x = 50 + (int) (Math.random() * 150);
-                        circles[i].chRad(x);
+                    for (int i = 0; i < cntCircles; i++) {
+                        int x = 10 + (int) (Math.random() * 150);
+                        circles[i].chengeD(x);
                         circles[i].Show(visionCircle);
                     }
                     cP.revalidate();
                     cP.repaint();
                 } else {
-                    JOptionPane.showMessageDialog(fNL, "Массив Окружностей не создан");
+                    JOptionPane.showMessageDialog(fNL, "Массив окружностей не найден");
                 }
             }
         });
-
+        //изменение размера для прямоугольника
         buttons[10].addActionListener(e -> {
-            int x = -25 + (int) (Math.random() * 50);
-            int y = -25 + (int) (Math.random() * 50);
+            int x = 10 + (int) (Math.random() * 50);
+            int y = 10 + (int) (Math.random() * 50);
             if (buttonKey == 3) {
                 if (rectangle != null) {
                     ((Rectangle) rectangle).chSize(x, y);
@@ -447,39 +469,15 @@ public  class Main{
                     JOptionPane.showMessageDialog(fNL, "Массив прямоугольников не создан");
                 }
             }
-            else if (buttonKey == 4) {
-                if (triangle != null) {
-                    ((Triangle) triangle).chSize(x, y);
-                    ((Triangle) triangle).Show(visionTriangle);
-                    cP.revalidate();
-                    cP.repaint();
-                }
-                else {
-                    JOptionPane.showMessageDialog(fNL, "Треугольник не найден");
-                }
-            }
-            else if (buttonKey == 14) {
-                if (triangles != null) {
-                    for (int i = 0; i < cntTriangles; i++) {
-                        triangles[i].chSize(x, y);
-                        triangles[i].Show(visionTriangle);
-                    }
-                    cP.revalidate();
-                    cP.repaint();
-                } else {
-                    JOptionPane.showMessageDialog(fNL, "Массив треугольников не создан");
-                }
-            }
+
             x = y = 0;
         });
 
         //изменение видимости
-
         buttons[11].addActionListener(e -> {
             if (buttonKey == 1) {
                 if (line != null) {
                     vision = !vision;
-                    System.out.println("Видимость: " + vision);
                     ((Line) line).Show(vision);
                     cP.revalidate(); cP.repaint();
                 } else {
@@ -489,7 +487,6 @@ public  class Main{
             else if (buttonKey == 11) {
                 if (lines != null) {
                     vision = !vision;
-                    System.out.println("Видимость: " + vision);
                     for (int i=0; i<10; i++) {
                         lines[i].Show(vision);
                         cP.repaint();
@@ -503,7 +500,6 @@ public  class Main{
             else if (buttonKey == 2) {
                 if (circle != null) {
                     visionCircle = !visionCircle;
-                    System.out.println("Видимость: " + visionCircle);
                     ((Circle) circle).Show(visionCircle);
                     cP.revalidate(); cP.repaint();
                 }
@@ -514,21 +510,19 @@ public  class Main{
             else if (buttonKey == 12) {
                 if (circles != null) {
                     visionCircle = !visionCircle;
-                    System.out.println("Видимость: " + visionCircle);
-                    for (int i=0; i<10; i++) {
+                    for (int i=1; i<cntCircles; i++) {
                         circles[i].Show(visionCircle);
                         cP.repaint();
                     }
                     cP.revalidate();
                 }
                 else {
-                    JOptionPane.showMessageDialog(fNL, "Массив линий не найден");
+                    JOptionPane.showMessageDialog(fNL, "Массив окружностей не найден");
                 }
             }
             else if (buttonKey == 3) {
                 if (rectangle != null) {
                     visionRect = !visionRect;
-                    System.out.println("Видимость: " + visionRect);
                     ((Rectangle) rectangle).Show(visionRect);
                     cP.revalidate(); cP.repaint();
                 } else {
@@ -538,8 +532,7 @@ public  class Main{
             else if (buttonKey == 13) {
                 if (rectangles != null) {
                     visionRect = !visionRect;
-                    System.out.println("Видимость: " + visionRect);
-                    for (int i=0; i<10; i++) {
+                    for (int i=0; i<cntRects; i++) {
                         rectangles[i].Show(visionRect);
                         cP.repaint();
                     }
@@ -552,7 +545,6 @@ public  class Main{
             else if (buttonKey == 4) {
                 if (triangle != null) {
                     visionTriangle = !visionTriangle;
-                    System.out.println("Видимость: " + visionTriangle);
                     ((Triangle) triangle).Show(visionTriangle);
                     cP.revalidate(); cP.repaint();
                 } else {
@@ -563,7 +555,7 @@ public  class Main{
                 if (triangles != null) {
                     visionTriangle = !visionTriangle;
                     System.out.println("Видимость: " + visionTriangle);
-                    for (int i=0; i<10; i++) {
+                    for (int i=0; i<cntTriangles; i++) {
                         triangles[i].Show(visionTriangle);
                         cP.repaint();
                     }
@@ -582,25 +574,22 @@ public  class Main{
             for (int number: numbers){
                 sP.add(buttons[number]);
             }
+            JOptionPane.showMessageDialog(fNL, "Следующие действия будут выполнены для массива объектов");
             if (buttonKey == 1 ) {
                 sP.add(buttons[8]);
                 buttonKey = 11;
-                JOptionPane.showMessageDialog(fNL, "Следующие действия будут выполнены для массива линий");
             }
             if (buttonKey == 2 ) {
                 sP.add(buttons[9]);
                 buttonKey = 12;
-                JOptionPane.showMessageDialog(fNL, "Следующие действия будут выполнены для массива окружностей");
             }
             if (buttonKey == 3 ) {
                 sP.add(buttons[10]);
                 buttonKey = 13;
-                JOptionPane.showMessageDialog(fNL, "Следующие действия будут выполнены для массива прямоугольников");
             }
             if (buttonKey == 4 ) {
-                sP.add(buttons[10]);
+                sP.add(buttons[8]);
                 buttonKey = 14;
-                JOptionPane.showMessageDialog(fNL, "Следующие действия будут выполнены для массива треугольников");
             }
             sP.revalidate();
             sP.repaint();
@@ -613,16 +602,29 @@ public  class Main{
         if(buttonKey == 1){
             if (line == null){
                 vision = true;
+
                 //добавить обработку корректности?
                 int x1 = Integer.parseInt(JOptionPane.showInputDialog("Введите X координату начала отрезка:"));
+                check(x1, 1);
                 int y1 = Integer.parseInt(JOptionPane.showInputDialog("Введите Y координату начала отрезка:"));
+                check(y1, 2);
                 int x2 = Integer.parseInt(JOptionPane.showInputDialog("Введите X координату конца отрезка:"));
+                check(x2, 1);
                 int y2 = Integer.parseInt(JOptionPane.showInputDialog("Введите Y координату конца отрезка:"));
+                check(y2, 1);
+                if (cntErors == 0){
+                    line = new Line(x1, y1, x2, y2, Color.RED);
+                    ((Line) line).Show(vision);
+                    cP.add(line, BorderLayout.CENTER);
+                    cP.revalidate();
+                    cntErors = 0;
+                }
+                else{
+                    cntErors = 0;
+                    JOptionPane.showMessageDialog(fNL, "Некорректный ввод выход за пределы холста при создании фигуры.");
+                }
 
-                line = new Line(x1, y1, x2, y2, Color.RED);
-                ((Line) line).Show(vision);
-                cP.add(line, BorderLayout.CENTER);
-                cP.revalidate();
+
             }
             else {
                 JOptionPane.showMessageDialog(fNL, "Линия уже нарисована");
@@ -641,13 +643,26 @@ public  class Main{
             if (circle == null) {
                 visionCircle = true;
                 int x = Integer.parseInt(JOptionPane.showInputDialog("Введите X координату центра:"));
+                check(x, 1);
                 int y = Integer.parseInt(JOptionPane.showInputDialog("Введите Y координату центра:"));
+                check(y, 2);
                 int D = Integer.parseInt(JOptionPane.showInputDialog("Введите диаметр окружности:"));
+                check(D, 2);
+                if (D+ x> interfaceWight || D + y > interfaceHight || D - y < 0 || D - x < 0) {
+                    cntErors += 1;
+                }
+                if (cntErors == 0){
+                    circle = new Circle (x, y, D, Color.GREEN);
+                    ((Circle) circle).Show(visionCircle);
+                    cP.add(circle, BorderLayout.CENTER);
+                    cP.revalidate();
+                }
+                else{
+                    cntErors = 0;
+                    JOptionPane.showMessageDialog(fNL, "Некорректный ввод: выход за пределы холста при создании фигуры.");
+                }
 
-                circle = new Circle (x, y, D, Color.GREEN);
-                ((Circle) circle).Show(visionCircle);
-                cP.add(circle, BorderLayout.CENTER);
-                cP.revalidate();
+
             } else {
                 JOptionPane.showMessageDialog(fNL, "Окружность уже нарисована");
             }
@@ -656,6 +671,10 @@ public  class Main{
             if (circles == null) {
                 JOptionPane.showMessageDialog(fNL, "Окружности будут созданы по случайным координатам.");
                 cntCircles = Integer.parseInt(JOptionPane.showInputDialog("Сколько окружностей необходимо создать?"));
+                if (cntCircles <= 0){
+                    JOptionPane.showMessageDialog(fNL, "Условие нарушено. Будет создано 10 окружностей.");
+                    cntCircles = 10;
+                }
                 createRandom();
             }
             else{
@@ -665,13 +684,24 @@ public  class Main{
             if(rectangle == null){
                 visionRect = true;
                 int x = Integer.parseInt(JOptionPane.showInputDialog("Введите X координату начала отрезка:"));
+                check(x,1);
                 int y = Integer.parseInt(JOptionPane.showInputDialog("Введите Y координату начала отрезка:"));
+                check(y, 2);
                 int w = Integer.parseInt(JOptionPane.showInputDialog("Введите X координату конца отрезка:"));
+                check(w, 2);
                 int h = Integer.parseInt(JOptionPane.showInputDialog("Введите Y координату конца отрезка:"));
-                rectangle = new Rectangle(x, y, w, h, Color.GREEN);
-                ((Rectangle) rectangle).Show(visionRect);
-                cP.add(rectangle, BorderLayout.CENTER);
-                cP.revalidate();
+                check(h, 2);
+                if (cntErors == 0){
+                    rectangle = new Rectangle(x, y, w, h, Color.GREEN);
+                    ((Rectangle) rectangle).Show(visionRect);
+                    cP.add(rectangle, BorderLayout.CENTER);
+                    cP.revalidate();
+                }
+                else{
+                    cntErors = 0;
+                    JOptionPane.showMessageDialog(fNL, "Некорректный ввод: выход за пределы холста при создании фигуры.");
+                }
+
             } else {
                 JOptionPane.showMessageDialog(fNL, "Прямоугольник уже нарисован");
             }
@@ -687,17 +717,29 @@ public  class Main{
         } else if (buttonKey == 4) {
             if (triangle == null){
                 visionTriangle = true;
-                //добавить обработку корректности?
-                int x = Integer.parseInt(JOptionPane.showInputDialog("Введите X координату начала отрезка:"));
-                int y = Integer.parseInt(JOptionPane.showInputDialog("Введите Y координату начала отрезка:"));
-                int z = Integer.parseInt(JOptionPane.showInputDialog("Введите X координату конца отрезка:"));
-                int t = Integer.parseInt(JOptionPane.showInputDialog("Введите Y координату конца отрезка:"));
-                int h = Integer.parseInt(JOptionPane.showInputDialog("Введите Y координату конца отрезка:"));
 
-                triangle = new Triangle(x, y, z, t, h, Color.YELLOW);
-                ((Triangle) triangle).Show(vision);
-                cP.add(triangle, BorderLayout.CENTER);
-                cP.revalidate();
+                int x = Integer.parseInt(JOptionPane.showInputDialog("Введите X координату  треугольника:"));
+                check(x, 1);
+                int y = Integer.parseInt(JOptionPane.showInputDialog("Введите Y координату  треугольника:"));
+                check(y, 2);
+                int z = Integer.parseInt(JOptionPane.showInputDialog("Введите точку треугольника:"));
+                check(z, 1);
+                int t = Integer.parseInt(JOptionPane.showInputDialog("Введите точку треугольника:"));
+                check(t, 2);
+                int h = Integer.parseInt(JOptionPane.showInputDialog("Введите точку треугольника:"));
+                check(h, 2);
+                int f =Integer.parseInt(JOptionPane.showInputDialog("Введите точку треугольника:"));
+                check(f, 2);
+                if (cntErors == 0){
+                    triangle = new Triangle(x, y, z, t, h,f, Color.YELLOW);
+                    ((Triangle) triangle).Show(vision);
+                    cP.add(triangle, BorderLayout.CENTER);
+                    cP.revalidate();
+                }
+                else{
+                    cntErors = 0;
+                    JOptionPane.showMessageDialog(fNL, "Некорректный ввод: выход за пределы холста при создании фигуры.");
+                }
             }
             else {
                 JOptionPane.showMessageDialog(fNL, "Треугольник уже нарисован");
@@ -714,12 +756,26 @@ public  class Main{
 
     }
 
+    private void  check(int a, int key){
+        if (key == 1){
+            if (a <= 0 || a >= 800){
+                cntErors ++;
+            }
+        }else if ( key == 2){
+            if (a <= 0 || a >= 500){
+                cntErors ++;
+            }
+        } else {
+            System.out.println("Передан некорректный ключ символа. Проверка не была произведена.");
+        }
+    }
+
     private  void createRandom(){
-        a = (int) (Math.random() * 300);
-        b = (int) (Math.random() * 300);
-        c = (int) (Math.random() * 300);
-        d = (int) (Math.random() * 300);
-        e = (int) (Math.random() * 300);
+        a = (int) (Math.random() * 300) +1;
+        b = (int) (Math.random() * 300)+1;
+        c = (int) (Math.random() * 300)+1;
+        d = (int) (Math.random() * 300)+1;
+        e = (int) (Math.random() * 300)+1;
         if (buttonKey == 1) {
             if (line == null) {
                 vision = true;
@@ -736,18 +792,16 @@ public  class Main{
                 lines = new Line[cntLines];
                 vision = true;
                 lines[0] = new Line (a, b, c, d, Color.BLACK);
-                System.out.println("Line №" + (1) + " координаты:: " + a +", "+ b +", "+ c +", "+ d);
                 for (int i = 1; i < cntLines; i++){
-                    a = (int) (Math.random() * 300);
-                    b = (int) (Math.random() * 300);
-                    c = (int) (Math.random() * 300);
-                    d = (int) (Math.random() * 300);
                     lines[i] = new Line (a, b, c, d, Color.BLACK);
-                    System.out.println("Line №" + (i+1) + " координаты:: " + a +", "+ b +", "+ c +", "+ d);
                     lines[i].Show(vision);
                     cP.add(lines[i], BorderLayout.CENTER);
                     cP.validate();
                     cP.repaint();
+                    a = (int) (Math.random() * 300) + 1;
+                    b = (int) (Math.random() * 300) + 1;
+                    c = (int) (Math.random() * 300) + 1;
+                    d = (int) (Math.random() * 300) + 1;
                 }
                 cP.revalidate();
             }else{
@@ -756,6 +810,9 @@ public  class Main{
             }
         } else if (buttonKey == 2) {
             if (circle == null) {
+                a = (int) (Math.random() * (600-100)) + 100;
+                b = (int) (Math.random() * (600-100)) + 100;
+                c = (int) (Math.random() * (300));
                 visionCircle = true;
                 circle = new Circle (a, b, c, Color.GREEN);
                 ((Circle) circle).Show(visionCircle);
@@ -769,15 +826,11 @@ public  class Main{
             if (circles == null){
                 circles = new Circle[cntCircles];
                 visionCircle = true;
-                circles[0] = new Circle (a, b, c, Color.BLACK);
-                System.out.println("Circle №" + (1) + " координаты:: " + a +", "+ b +", "+ c);
-                for (int i = 1; i < cntCircles; i++){
-                    a = (int) (Math.random() * 300);
-                    b = (int) (Math.random() * 300);
-                    c = (int) (Math.random() * 300);
-
+                for (int i = 0; i < cntCircles; i++){
+                    a = (int) (Math.random() * (900-100)) + 100;
+                    b = (int) (Math.random() * (500-100)) + 100;
+                    c = (int) (Math.random() * (100-1)) + 100;
                     circles[i] = new Circle (a, b, c, Color.BLACK);
-                    System.out.println("Circle №" + (i+1) + " координаты:: " + a +", "+ b +", "+ c);
                     circles[i].Show(visionCircle);
                     cP.add(circles[i], BorderLayout.CENTER);
                     cP.validate();
@@ -795,22 +848,20 @@ public  class Main{
                 cP.add(rectangle, BorderLayout.CENTER);
                 cP.revalidate();
             } else {
-                JOptionPane.showMessageDialog(fNL, "Окружность уже нарисована");
+                JOptionPane.showMessageDialog(fNL, "Прямоугольник уже нарисован");
             }
         } else if (buttonKey== 13) {
             if (rectangles == null){
                 rectangles = new Rectangle[cntRects];
                 visionRect = true;
                 rectangles[0] = new Rectangle (a, b, c, d, Color.ORANGE);
-                System.out.println("Rect №" + (1) + " координаты:: " + a +", "+ b +", "+ c +", "+ d);
                 for (int i = 1; i < cntRects; i++){
-                    a = (int) (Math.random() * 300);
-                    b = (int) (Math.random() * 300);
-                    c = (int) (Math.random() * 300);
-                    d = (int) (Math.random() * 300);
+                    a = (int) (Math.random() * 300)+1;
+                    b = (int) (Math.random() * 300)+1;
+                    c = (int) (Math.random() * 300)+1;
+                    d = (int) (Math.random() * 300)+1;
                     rectangles[i] = new Rectangle (a, b, c, d, Color.BLACK);
-                    System.out.println("Rect №" + (i+1) + " координаты:: " + a +", "+ b +", "+ c +", "+ d);
-                    rectangles[i].Show(vision);
+                    rectangles[i].Show(visionRect);
                     cP.add(rectangles[i], BorderLayout.CENTER);
                     cP.validate();
                     cP.repaint();
@@ -824,17 +875,17 @@ public  class Main{
             if (triangles == null){
                 triangles = new Triangle[cntTriangles];
                 visionTriangle = true;
-                triangles[0] = new Triangle (a, b, c, d, e, Color.BLACK);
-                System.out.println("Triangle №" + (1) + " координаты:: " + a +", "+ b +", "+ c +", "+ d);
+                int f = (int) (Math.random() * 300) +1;
+                triangles[0] = new Triangle (a, b, c, d, e,f, Color.BLACK);
                 for (int i = 1; i < cntTriangles; i++){
-                    a = (int) (Math.random() * 300);
-                    b = (int) (Math.random() * 300);
-                    c = (int) (Math.random() * 300);
-                    d = (int) (Math.random() * 300);
-                    e = (int) (Math.random() * 300);
-                    triangles[i] = new Triangle (a, b, c, d,e, Color.BLACK);
-                    System.out.println("Triangle №" + (i+1) + " координаты:: " + a +", "+ b +", "+ c +", "+ d);
-                    triangles[i].Show(vision);
+                    a = (int) (Math.random() * 300)+1;
+                    b = (int) (Math.random() * 300)+1;
+                    c = (int) (Math.random() * 300)+1;
+                    d = (int) (Math.random() * 300)+1;
+                    e = (int) (Math.random() * 300)+1;
+                    f = (int) (Math.random() * 300) +1;
+                    triangles[i] = new Triangle (a, b, c, d,e,f, Color.BLACK);
+                    triangles[i].Show(visionTriangle);
                     cP.add(triangles[i], BorderLayout.CENTER);
                     cP.validate();
                     cP.repaint();
@@ -847,7 +898,8 @@ public  class Main{
         } else if (buttonKey == 4) {
             if (triangle == null){
                 visionTriangle = true;
-                triangle = new Triangle (a, b, c,d,e, Color.MAGENTA);
+                int f = (int) (Math.random() * 300) +1;
+                triangle = new Triangle (a, b, c,d,e, f,Color.MAGENTA);
                 ((Triangle) triangle).Show(visionTriangle);
                 cP.add(triangle, BorderLayout.CENTER);
                 cP.revalidate();

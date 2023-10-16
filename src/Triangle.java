@@ -2,40 +2,76 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Triangle extends JPanel {
-    private int x, y, z, t, h;
+    private int interfaceWidth = 1000, interfaceHeight = 500;
+    private  int[] coordinates;
     private Color color;
+    private  int[] testSize;
     private boolean VISION = true;
 
-    public Triangle (int c1, int c2, int c3, int c4, int c5, Color c) {
+    public Triangle (int x, int y, int z, int t, int h, int f, Color c) {
         setLayout(null);
         setOpaque(false);
-        x = c1;
-        y = c2;
-        z = c3;
-        t = c4;
-        h = c5;
-        color = c;
+        this.coordinates = new int[] {x, y, z, t, h, f};
+        this.color = c;
+        this.VISION = true;
     }
 
-    public Triangle (int c1, int c2, int c3, int c4, int c5) {
+    public Triangle (int x, int y, int z, int t, int h, int f) {
         setLayout(null);
         setOpaque(false);
-        x = c1;
-        y = c2;
-        z = c3;
-        t = c4;
-        h = c5;
-        color= Color.BLACK;
+        this.coordinates = new int[] {x, y, z, t, h, f};
+        this.color = Color.BLACK;
+        this.VISION = true;
     }
 
-    public void MoveTo(int c1, int c2) {
-        x += c1;
-        y += c1;
-        z += c1;
-        h += c2;
-        t += c2;
+    public void MoveTo(int d1, int d2) {
+
+        if (chek(d1,d2)){
+            for (int i =0; i < 6; i++){
+                if ( i < 3){
+                    this.coordinates[i] += d1;
+                } else{
+                    this.coordinates[i] += d2;
+                }
+            }
+        } else{
+            do {
+                d1 = (int) (Math.random() * 600 - 100);
+                d2 = (int) (Math.random() * 600 - 100);
+            } while (!chek(d1,d2));
+
+            for (int i =0; i < 6; i++){
+                if ( i < 3){
+                    this.coordinates[i] += d1;
+                } else{
+                    this.coordinates[i] += d2;
+                }
+            }
+        }
 
     }
+
+    private boolean chek(int d1, int d2) {
+        int[] tests = new int[6];
+        boolean f = true;
+        for (int i = 0; i < 6; i++) {
+            if (i < 3) {
+                tests[i] = coordinates[i] + d1;
+                if (f & (tests[i] <= 0 || tests[i] >= interfaceWidth)) {
+                    f = false;
+                    return f;
+                }
+            } else {
+                tests[i] = coordinates[i] + d2;
+                if (f & (tests[i] <= 0 || tests[i] >= interfaceHeight)) {
+                    f = false;
+                    return f;
+                }
+            }
+        }
+        return f;
+    }
+
 
     public void Show(boolean VISION) {
         this.VISION= VISION;
@@ -44,19 +80,53 @@ public class Triangle extends JPanel {
         this.repaint();
     }
 
-    public void chSize(int c1, int c2) {
-        x -= c1;
-        z += c1;
-        t -= c2;
+    public void rotate() {
+        double centerX = (coordinates[0] + coordinates[1] + coordinates[2]) / 3.0;
+        double centerY = (coordinates[3] + coordinates[4] + coordinates[5]) / 3.0;
+        double angle = Math.toRadians(45); // Угол поворота в радианах (45 градусов)
+
+        // Создаем временный массив для хранения новых координат точек
+        int[] newCoordinates = new int[6];
+
+        for (int i = 0; i < 3; i++) {
+            double x = coordinates[i] - centerX;
+            double y = coordinates[i + 3] - centerY;
+
+            // Поворачиваем точку вокруг центра треугольника
+            double newX = x * Math.cos(angle) - y * Math.sin(angle);
+            double newY = x * Math.sin(angle) + y * Math.cos(angle);
+
+            newCoordinates[i] = (int) (newX + centerX);
+            newCoordinates[i + 3] = (int) (newY + centerY);
+        }
+
+        // Проверяем, не выходят ли новые координаты за пределы интерфейса
+        if (checkBounds(newCoordinates)) {
+            // Если новые координаты не выходят за пределы, обновляем текущие координаты
+            this.coordinates = newCoordinates;
+        } else {
+            JOptionPane.showMessageDialog(null, "Cannot rotate the other way", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
     }
+
+    private boolean checkBounds(int[] newCoordinates) {
+        for (int i = 0; i < 6; i++) {
+            if (i < 3 && (newCoordinates[i] < 0 || newCoordinates[i] >= interfaceWidth)) {
+                return false;
+            } else if (i >= 3 && (newCoordinates[i] < 0 || newCoordinates[i] >= interfaceHeight)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (VISION) {
             g.setColor(color);
-            g.drawPolygon(new int[] {x, y, z}, new int[] {t, h, t},3);
-            System.out.println("Triangle Видимость: " + VISION);
+            g.drawPolygon(new int[] {coordinates[0], coordinates[1], coordinates[2]}, new int[] {coordinates[3], coordinates[4], coordinates[5]},3);
         }
     }
 
