@@ -22,6 +22,7 @@ public class Line extends JPanel {
         setOpaque(false);
     }
 
+    //можно сделать красивее и проще
     public void MoveTo(int dx, int dy) {
         int testx1 = x1, testx2 = x2, testy1 = y1, testy2 = y2;
         testx1 += dx;
@@ -54,6 +55,7 @@ public class Line extends JPanel {
         this.repaint();
     }
 
+    //вращение относительно одной из точек прямой
     public void Turn() {
         double c1, c2;
         c1 = (x2 - x1) * Math.cos(Math.toRadians(45.0)) - (y2 - y1) * Math.sin(Math.toRadians(45.0)) + x1;
@@ -65,7 +67,6 @@ public class Line extends JPanel {
         }
         x2= (int)c1;
         y2= (int)c2;
-
     }
 
     protected void paintComponent(Graphics g) {

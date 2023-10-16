@@ -3,10 +3,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Circle extends JPanel {
-    private int x, y, D;
-    private int interfaceWidth = 900, interfaceHeight = 450;
-    private Color color;
-    private boolean VISION = true;
+    private int x, y, D; //координаты центра и диаметр окр-ти
+    private int interfaceWidth = 900, interfaceHeight = 450; //границы области рисования
+    private Color color; //цвет фигуры
+    private boolean VISION = true; //видимость фигуры
 
     public Circle (int x, int y, int diameter, Color color) {
         setLayout(null);
@@ -26,6 +26,7 @@ public class Circle extends JPanel {
         this.color = Color.BLACK;
     }
 
+    //смещение на некоторое число для х и у
     public void MoveTo(int dx, int dy) {
         int testx = x, testy = y;
         testx += dx;
@@ -43,6 +44,7 @@ public class Circle extends JPanel {
 
     }
 
+    //изменение видимости фигуры
     public void Show(boolean VISION) {
         this.VISION= VISION;
         setVisible(this.VISION);
@@ -50,6 +52,7 @@ public class Circle extends JPanel {
         this.repaint();
     }
 
+    //изменение диаметра фигуры
     public void chengeD(int Diam) {
         if (x - Diam >= 0 && x + Diam <= interfaceWidth && y - Diam >= 0 && y + Diam <= interfaceHeight){
             this.D = Diam;
@@ -58,10 +61,7 @@ public class Circle extends JPanel {
         }
     }
 
-    public int getD() {
-        return D;
-    }
-
+    //рисование фигуры на холсте
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (VISION) {

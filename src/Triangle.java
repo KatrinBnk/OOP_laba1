@@ -3,9 +3,8 @@ import java.awt.*;
 
 public class Triangle extends JPanel {
     private int interfaceWidth = 1000, interfaceHeight = 500;
-    private  int[] coordinates;
+    private  int[] coordinates; //координаты точек треугольник: первые три по оси ох, оставшиеся три по оу
     private Color color;
-    private  int[] testSize;
     private boolean VISION = true;
 
     public Triangle (int x, int y, int z, int t, int h, int f, Color c) {
@@ -26,7 +25,7 @@ public class Triangle extends JPanel {
 
     public void MoveTo(int d1, int d2) {
 
-        if (chek(d1,d2)){
+        if (check(d1,d2)){
             for (int i =0; i < 6; i++){
                 if ( i < 3){
                     this.coordinates[i] += d1;
@@ -38,7 +37,7 @@ public class Triangle extends JPanel {
             do {
                 d1 = (int) (Math.random() * 600 - 100);
                 d2 = (int) (Math.random() * 600 - 100);
-            } while (!chek(d1,d2));
+            } while (!check(d1,d2));
 
             for (int i =0; i < 6; i++){
                 if ( i < 3){
@@ -51,7 +50,7 @@ public class Triangle extends JPanel {
 
     }
 
-    private boolean chek(int d1, int d2) {
+    private boolean check(int d1, int d2) {
         int[] tests = new int[6];
         boolean f = true;
         for (int i = 0; i < 6; i++) {
@@ -80,6 +79,7 @@ public class Triangle extends JPanel {
         this.repaint();
     }
 
+    //вращение вокруг центра (при многократном использовании дает погрешность в координатах)
     public void rotate() {
         double centerX = (coordinates[0] + coordinates[1] + coordinates[2]) / 3.0;
         double centerY = (coordinates[3] + coordinates[4] + coordinates[5]) / 3.0;

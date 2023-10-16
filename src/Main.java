@@ -7,9 +7,10 @@ public  class Main{
     private JPanel cP = centerPanel();
     private JPanel sP;
 
-    // список всех кнопок, необходимых для рыботы
+    // список всех кнопок, необходимых для интерфейса
     private JButton[] buttons;
     private int interfaceWight = 1000, interfaceHight = 500;
+    //ключ-код активной кнопки
     private int buttonKey = 0;
 
     //для работы с объектами
@@ -46,6 +47,7 @@ public  class Main{
                 new JButton("Массив")
         };
         sP = southPanel();
+
         //создаем основное окно
         fNL.setLayout(new BorderLayout());
         fNL.setSize(1200,700);
@@ -129,6 +131,7 @@ public  class Main{
             buttonKey = 3;
         });
 
+        //треугольник
         buttons[4].addActionListener( e-> {
             sP.removeAll();
             numbers = new int[]{0,5,6,7,8,11,12};
@@ -139,7 +142,6 @@ public  class Main{
             sP.repaint();
             buttonKey = 4;
         });
-
 
         //создание
         buttons[5].addActionListener(e ->{
@@ -162,8 +164,8 @@ public  class Main{
             }
 
         });
-        //передвинуть
 
+        //сдвинуть
         buttons[6].addActionListener( e -> {
 
             int x = (int) (Math.random() * 100) - 100;
@@ -258,7 +260,7 @@ public  class Main{
             cntCircles = cntTriangles = cntRects = cntLines = 10;
         });
 
-        // del
+        //удалить фигуру/ы
         buttons[7].addActionListener( e-> {
             if (buttonKey == 1) {
                 if (line != null) {
@@ -366,7 +368,7 @@ public  class Main{
             }
         });
 
-        //повернуть
+        //вращение фигур(линия и треугольник)
         buttons[8].addActionListener( e -> {
             if (buttonKey == 1) {
                 if (line != null) {
@@ -415,7 +417,7 @@ public  class Main{
             }
         });
 
-        //изменить радиус
+        //изменить диаметр(окружность)
         buttons[9].addActionListener(e-> {
             if (buttonKey == 2) {
                 int x = 10 + (int) (Math.random() * 150);
@@ -473,7 +475,7 @@ public  class Main{
             x = y = 0;
         });
 
-        //изменение видимости
+        //изменение видимости активных фигур
         buttons[11].addActionListener(e -> {
             if (buttonKey == 1) {
                 if (line != null) {
@@ -567,7 +569,7 @@ public  class Main{
             }
         });
 
-        //массив
+        //кнопки для работы с массивом
         buttons[12].addActionListener(e -> {
             sP.removeAll();
             numbers = new int[]{0, 5, 6, 7, 11};
@@ -598,6 +600,8 @@ public  class Main{
 
         return p;
     }
+
+    //созадание фигур
     private void create(){
         if(buttonKey == 1){
             if (line == null){
@@ -756,6 +760,7 @@ public  class Main{
 
     }
 
+    //проверка входных данных
     private void  check(int a, int key){
         if (key == 1){
             if (a <= 0 || a >= 800){
@@ -770,6 +775,7 @@ public  class Main{
         }
     }
 
+    //создание фигуры со случайными координатами
     private  void createRandom(){
         a = (int) (Math.random() * 300) +1;
         b = (int) (Math.random() * 300)+1;

@@ -55,6 +55,7 @@ public class Rectangle extends JPanel {
         this.repaint();
     }
 
+    //изменение размера крямоугольника (увеличение/увеличение высоты и/или ширины)
     public void chSize(int dw, int dh) {
         int testw = w, testh = h;
         testw += dw;
