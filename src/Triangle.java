@@ -121,7 +121,6 @@ public class Triangle extends JPanel {
     }
 
 
-
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (VISION) {

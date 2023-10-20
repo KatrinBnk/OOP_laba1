@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
+
 
 public class Line extends JPanel {
     private int x1, y1, x2, y2;
@@ -22,30 +24,26 @@ public class Line extends JPanel {
         setOpaque(false);
     }
 
-    //можно сделать красивее и проще
     public void MoveTo(int dx, int dy) {
-        int testx1 = x1, testx2 = x2, testy1 = y1, testy2 = y2;
-        testx1 += dx;
-        testy1 += dy;
-        testx2 += dx;
-        testy2 += dy;
-        if (testx1 > interfaceWidth || testx2 > interfaceWidth || testy1 > interfaceHeight || testy2 > interfaceHeight){
-            x1 -= dx;
-            y1 -= dy;
-            x2 -= dx;
-            y2 -= dy;
-        } else if(testx1 < 0 || testx2 < 0 || testy1 < 0 || testy2 < 0) {
-            x1 -= dx;
-            y1 -= dy;
-            x2 -= dx;
-            y2 -= dy;
-        } else{
-            x1 += dx;
-            y1 += dy;
-            x2 += dx;
-            y2 += dy;
+        int newx1 = x1 + dx;
+        int newy1 = y1 + dy;
+        int newx2 = x2 + dx;
+        int newy2 = y2 + dy;
+        if (newx1 > 0 && newx2 > 0 && newx1 < interfaceWidth && newx2 < interfaceWidth && newy1 > 0 && newy2 > 0 && newy1 < interfaceHeight && newy2 < interfaceHeight) {
+            x1 = newx1;
+            y1 = newy1;
+            x2 = newx2;
+            y2 = newy2;
+        } else {
+            int deltaX = x2 - x1;
+            int deltaY = y2 - y1;
+            Random random = new Random();
+            x1 = random.nextInt(interfaceWidth - deltaX);
+            y1 = random.nextInt(interfaceHeight - deltaY);
+            x2 = x1 + deltaX;
+            y2 = y1 + deltaY;
         }
-
+        System.out.println("Координаты линии: (" + x1 + ", " + y1 + ") - (" + x2 + ", " + y2 + ")");
     }
 
 
